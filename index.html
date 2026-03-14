@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CINNABAR — Premium Skincare</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,600;0,700;0,900;1,300&family=Noto+Serif+SC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--red:#C0392B;--red2:#E8251A;--white:#FFFFFF;--cream:#F9F5F0;--ink:#111111;--grey:#666666;--lg:#EEEEEE;}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Barlow',sans-serif;background:var(--white);color:var(--ink);overflow-x:hidden;cursor:none;}
+.cursor{position:fixed;width:10px;height:10px;background:var(--red);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .3s,height .3s;}
+.cursor-ring{position:fixed;width:36px;height:36px;border:1.5px solid var(--red);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .12s ease;opacity:.5;}
+.cursor.big{width:18px;height:18px;}.cursor-ring.big{width:56px;height:56px;opacity:.2;}
+.loader{position:fixed;inset:0;background:var(--red);z-index:10000;display:flex;align-items:center;justify-content:center;transition:opacity .8s ease,visibility .8s;}
+.loader.hide{opacity:0;visibility:hidden;}
+.loader-logo{font-family:'Bebas Neue',sans-serif;font-size:72px;color:var(--white);letter-spacing:.3em;animation:blink 1.4s ease infinite;}
+.loader-bar{width:0;height:2px;background:rgba(255,255,255,.6);margin:20px auto 0;animation:bar 1.8s ease forwards;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}@keyframes bar{to{width:160px;}}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:22px 60px;transition:all .4s;}
+nav.scrolled{background:rgba(255,255,255,.96);backdrop-filter:blur(12px);padding:14px 60px;border-bottom:1px solid rgba(0,0,0,.08);}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.3em;color:var(--white);text-decoration:none;transition:color .3s;}
+nav.scrolled .nav-logo{color:var(--red);}
+.nav-links{display:flex;gap:36px;list-style:none;}
+.nav-links a{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.85);text-decoration:none;transition:color .3s;}
+nav.scrolled .nav-links a{color:var(--ink);}
+.nav-links a:hover,nav.scrolled .nav-links a:hover{color:var(--red);}
+.nav-shop{font-size:11px;letter-spacing:.18em;text-transform:uppercase;background:var(--white);color:var(--red);padding:11px 26px;text-decoration:none;font-weight:700;transition:all .3s;}
+nav.scrolled .nav-shop{background:var(--red);color:var(--white);}
+.hero{position:relative;height:100vh;min-height:600px;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;}
+.hero-left{position:relative;overflow:hidden;}
+.hero-left img{width:100%;height:100%;object-fit:cover;transition:transform 8s ease;transform:scale(1.06);}
+.hero-left img.loaded{transform:scale(1);}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to right,rgba(0,0,0,.25) 0%,transparent 100%);}
+.hero-right{background:var(--red);display:flex;align-items:flex-end;padding:60px 50px;position:relative;overflow:hidden;}
+.hero-bg-char{position:absolute;top:-30px;right:-20px;font-family:'Noto Serif SC',serif;font-size:300px;color:rgba(255,255,255,.05);line-height:1;pointer-events:none;}
+.hero-product{width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:32px;position:absolute;top:50px;right:50px;}
+.hero-tag{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:20px;display:flex;align-items:center;gap:12px;}
+.hero-tag::before{content:'';width:24px;height:1px;background:rgba(255,255,255,.4);}
+.hero-h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,6.5vw,84px);line-height:.95;color:var(--white);margin-bottom:28px;letter-spacing:.02em;}
+.hero-sub{font-size:clamp(16px,2vw,22px);color:rgba(255,255,255,.55);font-style:italic;font-weight:300;margin-bottom:32px;}
+.hero-cta{display:inline-flex;align-items:center;gap:12px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--white);border:1px solid rgba(255,255,255,.4);padding:14px 28px;text-decoration:none;transition:all .3s;}
+.hero-cta:hover{background:var(--white);color:var(--red);}
+.hero-scroll{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;z-index:10;}
+.hero-scroll span{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.45);}
+.scroll-line{width:1px;height:50px;background:linear-gradient(to bottom,rgba(255,255,255,.6),transparent);animation:sline 2s ease infinite;}
+@keyframes sline{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+.marquee{background:var(--ink);padding:13px 0;overflow:hidden;white-space:nowrap;}
+.marquee-inner{display:inline-flex;animation:run 22s linear infinite;}
+.mitem{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.7);padding:0 36px;}
+.msep{color:var(--red);}
+@keyframes run{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .85s ease,transform .85s cubic-bezier(.16,1,.3,1);}
+.reveal.on{opacity:1;transform:none;}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
+.slabel{font-size:10px;letter-spacing:.35em;text-transform:uppercase;color:var(--red);display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.slabel::before{content:'';width:24px;height:1px;background:var(--red);}
+.unlock{display:grid;grid-template-columns:1fr 1fr;gap:0;min-height:560px;}
+.unlock-left{padding:90px 70px;display:flex;flex-direction:column;justify-content:center;}
+.unlock-h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(38px,5vw,62px);line-height:1;margin-bottom:24px;}
+.unlock-body{font-size:15px;line-height:1.85;color:var(--grey);font-weight:300;max-width:420px;}
+.unlock-right{display:grid;grid-template-columns:1fr 1fr;}
+.upanel{position:relative;overflow:hidden;min-height:280px;}
+.upanel img{width:100%;height:100%;object-fit:cover;}
+.upanel-red{background:var(--red);display:flex;flex-direction:column;justify-content:flex-end;padding:36px 30px;}
+.upanel-ink{background:var(--cream);position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:36px 30px;}
+.upanel-ink::before{content:'国传统';position:absolute;top:-10px;left:-10px;font-family:'Noto Serif SC',serif;font-size:90px;color:rgba(0,0,0,.06);line-height:1;}
+.up-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:.1em;color:var(--white);margin-bottom:8px;}
+.upanel-ink .up-title{color:var(--ink);}
+.up-body{font-size:12px;line-height:1.7;color:rgba(255,255,255,.75);font-weight:300;}
+.upanel-ink .up-body{color:var(--grey);}
+.shop{padding:90px 60px;background:var(--white);}
+.shop-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:50px;flex-wrap:wrap;gap:20px;}
+.shop-h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,5vw,58px);letter-spacing:.02em;}
+.shop-hero{display:grid;grid-template-columns:1fr 1.4fr;gap:4px;margin-bottom:30px;}
+.shop-cta-panel{background:var(--red);padding:50px 44px;display:flex;flex-direction:column;justify-content:flex-end;min-height:360px;position:relative;overflow:hidden;}
+.shop-cta-panel::before{content:'美肤';position:absolute;top:-20px;right:-10px;font-family:'Noto Serif SC',serif;font-size:160px;color:rgba(255,255,255,.06);line-height:1;}
+.shop-cta-label{font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--white);line-height:1;margin-bottom:16px;position:relative;}
+.shop-cta-body{font-size:13px;color:rgba(255,255,255,.65);line-height:1.7;margin-bottom:24px;max-width:300px;font-weight:300;position:relative;}
+.shop-btn{display:inline-block;font-size:11px;letter-spacing:.2em;text-transform:uppercase;background:var(--white);color:var(--red);padding:13px 30px;text-decoration:none;font-weight:700;transition:all .3s;position:relative;}
+.shop-btn:hover{background:var(--ink);color:var(--white);}
+.shop-img{position:relative;overflow:hidden;}
+.shop-img img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease;}
+.shop-img:hover img{transform:scale(1.04);}
+.carousel{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:0;}
+.cc{background:var(--cream);padding:40px 20px 28px;text-align:center;position:relative;overflow:hidden;cursor:none;transition:background .3s;}
+.cc:hover{background:var(--lg);}
+.cc-img{width:90px;height:90px;object-fit:contain;margin:0 auto 20px;display:block;filter:drop-shadow(0 8px 20px rgba(0,0,0,.12));transition:transform .4s ease;}
+.cc:hover .cc-img{transform:translateY(-6px);}
+.cc-name{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.05em;margin-bottom:4px;}
+.cc-desc{font-size:11px;color:var(--grey);letter-spacing:.05em;margin-bottom:12px;}
+.cc-price{font-size:13px;font-weight:700;color:var(--red);}
+.cc-tag{position:absolute;top:14px;left:14px;background:var(--red);color:var(--white);font-size:9px;letter-spacing:.15em;text-transform:uppercase;padding:4px 10px;}
+.benefits{padding:60px;display:grid;grid-template-columns:1fr 1fr;gap:0 80px;}
+.bitem{display:flex;align-items:flex-start;gap:14px;padding:16px 0;border-bottom:1px solid var(--lg);}
+.bdot{width:8px;height:8px;background:var(--red);border-radius:50%;flex-shrink:0;margin-top:6px;}
+.btext{font-size:14px;line-height:1.6;color:var(--grey);}
+.btext strong{color:var(--ink);font-weight:600;}
+.ings{padding:90px 60px;background:var(--white);}
+.ings-h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,6vw,72px);margin-top:12px;line-height:1;}
+.ings-layout{display:grid;grid-template-columns:1.1fr 1fr;gap:4px;align-items:start;margin-top:60px;}
+.ings-model{position:relative;overflow:hidden;}
+.ings-model img{width:100%;height:580px;object-fit:cover;object-position:top;}
+.ings-right{display:flex;flex-direction:column;gap:4px;}
+.ibox{padding:40px 36px;position:relative;overflow:hidden;}
+.ibox-cream{background:var(--cream);}
+.ibox-red{background:var(--red);}
+.ibox-ink{background:var(--ink);}
+.isym{font-family:'Noto Serif SC',serif;font-size:64px;opacity:.08;position:absolute;top:10px;right:16px;line-height:1;}
+.iname{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.05em;margin-bottom:8px;}
+.ibox-cream .iname{color:var(--ink);}
+.ibox-red .iname,.ibox-ink .iname{color:var(--white);}
+.idesc{font-size:13px;line-height:1.7;font-weight:300;}
+.ibox-cream .idesc{color:var(--grey);}
+.ibox-red .idesc{color:rgba(255,255,255,.75);}
+.ibox-ink .idesc{color:rgba(255,255,255,.6);}
+.redefine{padding:60px;background:var(--cream);position:relative;overflow:hidden;}
+.redefine::before{content:'素推美';font-family:'Noto Serif SC',serif;font-size:200px;color:rgba(192,57,43,.05);position:absolute;right:-20px;top:-20px;line-height:1;}
+.redefine-h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(30px,4vw,52px);margin-bottom:16px;}
+.redefine-body{font-size:15px;line-height:1.8;color:var(--grey);max-width:640px;font-weight:300;}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);background:var(--red);}
+.sbox{padding:70px 40px;text-align:center;border-right:1px solid rgba(255,255,255,.15);}
+.sbox:last-child{border-right:none;}
+.sn{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,7vw,80px);color:var(--white);line-height:1;margin-bottom:10px;}
+.sl{font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.6);}
+.mobile-sec{padding:90px 60px;background:var(--white);text-align:center;position:relative;overflow:hidden;}
+.mobile-sec::before{content:'佳';font-family:'Noto Serif SC',serif;font-size:500px;color:rgba(0,0,0,.025);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);line-height:1;pointer-events:none;}
+.mobile-h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,5vw,64px);margin:14px 0 50px;letter-spacing:.02em;}
+.phones{display:flex;align-items:center;justify-content:center;position:relative;z-index:1;}
+.center-circle{width:220px;height:220px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:2;}
+.center-circle span{font-family:'Noto Serif SC',serif;font-size:64px;color:var(--white);opacity:.9;}
+.pmock{width:140px;background:var(--ink);border-radius:22px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.2);position:relative;z-index:1;margin:0 -20px;}
+.pmock:first-child{transform:rotate(-8deg) translateX(10px);}
+.pmock:last-child{transform:rotate(8deg) translateX(-10px);}
+.pmock-bar{height:10px;background:var(--ink);display:flex;align-items:center;justify-content:center;}
+.pmock-bar::after{content:'';width:30px;height:3px;background:rgba(255,255,255,.3);border-radius:2px;}
+.ps-red{background:var(--red);height:60px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;}
+.ps-red span{font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--white);letter-spacing:.1em;}
+.ps-row{display:flex;gap:5px;margin-bottom:6px;}
+.ps-block{height:30px;background:var(--lg);flex:1;}
+.ps-block-r{background:rgba(192,57,43,.2);}
+.ps-line{height:6px;background:var(--lg);margin-bottom:5px;border-radius:2px;}
+.ps-line-s{width:60%;}
+.psc{background:var(--white);padding:10px;}
+.ritual{padding:90px 0;background:var(--ink);}
+.ritual-inner{padding:0 60px;margin-bottom:60px;}
+.ritual-h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,5vw,64px);color:var(--white);margin-top:12px;letter-spacing:.02em;}
+.ritual-grid{display:grid;grid-template-columns:repeat(4,1fr);}
+.rstep{padding:50px 40px;border-top:1px solid rgba(255,255,255,.08);transition:background .3s;}
+.rstep:hover{background:rgba(192,57,43,.12);}
+.rnum{font-family:'Bebas Neue',sans-serif;font-size:64px;color:var(--red);opacity:.3;line-height:1;margin-bottom:16px;transition:opacity .3s;}
+.rstep:hover .rnum{opacity:1;}
+.rtitle{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--white);letter-spacing:.05em;margin-bottom:12px;}
+.rbody{font-size:13px;color:rgba(255,255,255,.45);line-height:1.75;font-weight:300;}
+.testi{padding:100px 60px;background:var(--cream);text-align:center;position:relative;overflow:hidden;}
+.testi::before{content:'"';font-size:400px;position:absolute;top:-100px;left:50%;transform:translateX(-50%);color:rgba(192,57,43,.04);font-family:serif;line-height:1;pointer-events:none;}
+.tq{font-family:'Barlow',sans-serif;font-size:clamp(22px,3.5vw,42px);font-style:italic;font-weight:300;line-height:1.45;max-width:800px;margin:0 auto 30px;position:relative;z-index:1;}
+.ta{font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--grey);}
+.tdots{display:flex;gap:8px;justify-content:center;margin-top:32px;}
+.tdot{width:7px;height:7px;border-radius:50%;background:rgba(192,57,43,.25);cursor:none;transition:all .3s;}
+.tdot.on{background:var(--red);transform:scale(1.4);}
+.contact{display:grid;grid-template-columns:1fr 1fr;background:var(--ink);}
+.cl{padding:90px 70px;}
+.cr{padding:90px 70px;background:rgba(255,255,255,.03);}
+.ch2{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,5vw,64px);color:var(--white);line-height:1;margin:12px 0 24px;}
+.ch2 em{color:var(--red);font-style:normal;display:block;}
+.cbody{font-size:15px;color:rgba(255,255,255,.45);line-height:1.8;font-weight:300;margin-bottom:40px;}
+.ci{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+.cidot{width:6px;height:6px;background:var(--red);border-radius:50%;flex-shrink:0;}
+.citext{font-size:13px;color:rgba(255,255,255,.55);letter-spacing:.04em;}
+.form{display:flex;flex-direction:column;gap:16px;}
+.form input,.form textarea{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:var(--white);padding:16px 18px;font-family:'Barlow',sans-serif;font-size:15px;outline:none;transition:border-color .3s;resize:none;}
+.form input:focus,.form textarea:focus{border-color:var(--red);}
+.form input::placeholder,.form textarea::placeholder{color:rgba(255,255,255,.25);}
+.form textarea{height:120px;}
+.fbtn{align-self:flex-start;font-size:11px;letter-spacing:.2em;text-transform:uppercase;background:var(--red);color:var(--white);border:none;padding:16px 36px;cursor:none;transition:background .3s;}
+.fbtn:hover{background:#922B21;}
+.thankyou{background:var(--red);padding:80px 60px;display:grid;grid-template-columns:1fr auto;gap:60px;align-items:center;}
+.ty-kanji{font-family:'Noto Serif SC',serif;font-size:clamp(60px,10vw,130px);color:rgba(255,255,255,.18);line-height:1;margin-bottom:6px;}
+.ty-small{font-family:'Noto Serif SC',serif;font-size:22px;color:rgba(255,255,255,.45);letter-spacing:.2em;}
+.ty-text{font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,4vw,48px);color:var(--white);letter-spacing:.1em;margin-top:24px;}
+.ty-icon{font-size:36px;display:block;margin-top:8px;}
+.ty-right{text-align:right;}
+.ty-phones{display:flex;gap:16px;justify-content:flex-end;margin-bottom:24px;}
+.typh{width:100px;background:rgba(0,0,0,.3);border-radius:18px;overflow:hidden;}
+.typh-screen{background:var(--white);padding:8px;}
+.typh-bar{height:8px;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;}
+.typh-bar::after{content:'';width:20px;height:2px;background:rgba(255,255,255,.3);border-radius:1px;}
+.ty-sred{height:40px;background:var(--red);margin-bottom:6px;display:flex;align-items:center;justify-content:center;}
+.ty-sred span{font-family:'Bebas Neue',sans-serif;font-size:11px;color:var(--white);}
+.ty-sline{height:5px;background:var(--lg);margin-bottom:4px;border-radius:2px;}
+.ty-credit{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.08em;}
+.footer-bar{background:var(--ink);padding:24px 60px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+.fb-logo{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--red);letter-spacing:.3em;}
+.fb-links{display:flex;gap:28px;}
+.fb-links a{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.4);text-decoration:none;transition:color .3s;}
+.fb-links a:hover{color:var(--white);}
+.fb-copy{font-size:10px;color:rgba(255,255,255,.3);letter-spacing:.06em;}
+@media(max-width:900px){
+nav{padding:18px 24px;}nav.scrolled{padding:12px 24px;}.nav-links{display:none;}
+.hero{grid-template-columns:1fr;}.hero-left{height:55vw;min-height:260px;}.hero-right{padding:40px 28px;}
+.unlock{grid-template-columns:1fr;}.unlock-right{grid-template-columns:1fr 1fr;}.unlock-left{padding:60px 28px;}
+.shop{padding:60px 24px;}.shop-hero{grid-template-columns:1fr;}
+.benefits{padding:40px 24px;grid-template-columns:1fr;}
+.ings{padding:60px 24px;}.ings-layout{grid-template-columns:1fr;}.ings-model img{height:320px;}
+.stats{grid-template-columns:repeat(2,1fr);}.sbox{border-right:1px solid rgba(255,255,255,.1);padding:50px 20px;}
+.stats .sbox:nth-child(2){border-right:none;}
+.mobile-sec{padding:60px 24px;}.pmock{width:110px;}
+.ritual{padding:60px 0;}.ritual-inner{padding:0 24px;}.ritual-grid{grid-template-columns:repeat(2,1fr);}
+.testi{padding:70px 24px;}
+.contact{grid-template-columns:1fr;}.cl,.cr{padding:60px 28px;}
+.carousel{grid-template-columns:repeat(2,1fr);}
+.thankyou{grid-template-columns:1fr;padding:60px 28px;}.ty-right{text-align:left;}.ty-phones{justify-content:flex-start;}
+.footer-bar{padding:20px 24px;flex-direction:column;text-align:center;}
+.redefine{padding:50px 28px;}
+}
+@media(max-width:500px){.ritual-grid{grid-template-columns:1fr;}.unlock-right{grid-template-columns:1fr;}.stats{grid-template-columns:1fr 1fr;}.phones .pmock:last-child{display:none;}}
+</style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="ring"></div>
+<div class="loader" id="loader"><div><div class="loader-logo">CINNABAR</div><div class="loader-bar"></div></div></div>
+<nav id="nav">
+  <a href="#" class="nav-logo">CINNABAR</a>
+  <ul class="nav-links"><li><a href="#about">Heritage</a></li><li><a href="#products">Collection</a></li><li><a href="#ingredients">Ingredients</a></li><li><a href="#ritual">Ritual</a></li><li><a href="#contact">Contact</a></li></ul>
+  <a href="#products" class="nav-shop">Shop Now</a>
+</nav>
+
+<section class="hero" id="home">
+  <div class="hero-left">
+    <img src="https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=900&q=80&fit=crop" alt="Model" id="hi">
+    <div class="hero-overlay"></div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-bg-char">朱</div>
+    <div class="hero-product">🫙</div>
+    <div>
+      <div class="hero-tag">Premium Chinese Skincare</div>
+      <h1 class="hero-h1">CINNABAR<br>REPAIR<br><em style="font-style:italic;color:rgba(255,255,255,.65);font-size:.68em">WITH TEXTURE FOR<br>LIGHT CLARITY</em></h1>
+      <a href="#products" class="hero-cta">Explore Collection →</a>
+    </div>
+  </div>
+  <div class="hero-scroll"><span>Scroll</span><div class="scroll-line"></div></div>
+</section>
+
+<div class="marquee"><div class="marquee-inner"><span class="mitem">Cinnabar Repair <span class="msep">·</span></span><span class="mitem">Ancient Botanicals <span class="msep">·</span></span><span class="mitem">Unlock Potential <span class="msep">·</span></span><span class="mitem">Tradition Meets Modernity <span class="msep">·</span></span><span class="mitem">Pure Ingredients <span class="msep">·</span></span><span class="mitem">Luminous Skin <span class="msep">·</span></span><span class="mitem">Cinnabar Repair <span class="msep">·</span></span><span class="mitem">Ancient Botanicals <span class="msep">·</span></span><span class="mitem">Unlock Potential <span class="msep">·</span></span><span class="mitem">Tradition Meets Modernity <span class="msep">·</span></span><span class="mitem">Pure Ingredients <span class="msep">·</span></span><span class="mitem">Luminous Skin <span class="msep">·</span></span></div></div>
+
+<section id="about">
+  <div class="unlock">
+    <div class="unlock-left">
+      <div class="slabel reveal">Our Philosophy</div>
+      <h2 class="unlock-h2 reveal d1">UNLOCK<br>POTENTIAL</h2>
+      <p class="unlock-body reveal d2">For centuries, the wisdom of Chinese herbalists has unlocked the secrets of radiant skin. At CINNABAR, we honor this sacred lineage — distilling millennia of botanical knowledge into modern formulations that transform the skin from within.</p>
+    </div>
+    <div class="unlock-right">
+      <div class="upanel reveal"><img src="https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=500&q=80&fit=crop" alt="Tradition"></div>
+      <div class="upanel upanel-red reveal d1"><div class="up-title">TRADITION</div><p class="up-body">Drawing from 3,000 years of Chinese herbal medicine, each formula carries the weight and wisdom of ancient apothecaries.</p></div>
+      <div class="upanel upanel-ink reveal d2"><div class="up-title">MODERNITY</div><p class="up-body">Clinically proven results backed by modern dermatology, delivering visible radiance from the very first application.</p></div>
+      <div class="upanel reveal d3"><img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500&q=80&fit=crop" alt="Skin"></div>
+    </div>
+  </div>
+</section>
+
+<section class="shop" id="products">
+  <div class="shop-header">
+    <div><div class="slabel reveal">The Collection</div><h2 class="shop-h2 reveal d1">BEST IN RED:<br>PERFECTING PERFECTION</h2></div>
+  </div>
+  <div class="shop-hero reveal">
+    <div class="shop-cta-panel">
+      <div class="shop-cta-label">SHOP<br>NOW</div>
+      <p class="shop-cta-body">Discover our complete collection of premium skincare, formulated with ancient Chinese botanicals and modern science for transformative results.</p>
+      <a href="#" class="shop-btn">View All Products</a>
+    </div>
+    <div class="shop-img"><img src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=900&q=80&fit=crop" alt="Products"></div>
+  </div>
+  <div class="carousel reveal d1">
+    <div class="cc"><div class="cc-tag">Bestseller</div><img class="cc-img" src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=200&q=80&fit=crop" alt="S1"><div class="cc-name">Cinnabar Repair</div><div class="cc-desc">Repair Serum · 30ml</div><div class="cc-price">¥ 428</div></div>
+    <div class="cc"><img class="cc-img" src="https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=200&q=80&fit=crop" alt="S2"><div class="cc-name">Jade Moisture</div><div class="cc-desc">Rich Cream · 50ml</div><div class="cc-price">¥ 368</div></div>
+    <div class="cc"><div class="cc-tag">New</div><img class="cc-img" src="https://images.unsplash.com/photo-1631390563649-e4b2c2a7d3a3?w=200&q=80&fit=crop" alt="S3"><div class="cc-name">Redefine Texture</div><div class="cc-desc">Night Oil · 20ml</div><div class="cc-price">¥ 298</div></div>
+    <div class="cc"><img class="cc-img" src="https://images.unsplash.com/photo-1601049676869-702ea24cfd58?w=200&q=80&fit=crop" alt="S4"><div class="cc-name">Elixir Status</div><div class="cc-desc">Toning Essence · 100ml</div><div class="cc-price">¥ 248</div></div>
+  </div>
+  <div class="benefits">
+    <div class="bitem reveal"><div class="bdot"></div><div class="btext"><strong>Deep Penetration Formula</strong> — Our nano-encapsulation technology ensures active ingredients reach the deepest layers of skin.</div></div>
+    <div class="bitem reveal d1"><div class="bdot"></div><div class="btext"><strong>Dermatologist Tested</strong> — Every product is clinically tested and approved by leading dermatologists.</div></div>
+    <div class="bitem reveal d2"><div class="bdot"></div><div class="btext"><strong>97% Natural Ingredients</strong> — Sustainably sourced botanicals, free from parabens, sulfates, and synthetic fragrances.</div></div>
+    <div class="bitem reveal d3"><div class="bdot"></div><div class="btext"><strong>Visible Results in 4 Weeks</strong> — Clinical studies show significant improvement in skin texture, tone, and radiance.</div></div>
+  </div>
+</section>
+
+<section class="ings" id="ingredients">
+  <div class="slabel reveal">What's Inside</div>
+  <h2 class="ings-h2 reveal d1">KEY<br>INGREDIENTS</h2>
+  <div class="ings-layout">
+    <div class="ings-model reveal"><img src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=700&q=80&fit=crop&crop=top" alt="Model"></div>
+    <div class="ings-right">
+      <div class="ibox ibox-cream reveal d1"><div class="isym">竹</div><div class="iname">Vortex Texture Complex</div><p class="idesc">Our proprietary complex uses bamboo silica and pearl powder to create a silky, luminous finish that perfects skin texture from the very first application.</p></div>
+      <div class="ibox ibox-red reveal d2"><div class="isym">玫</div><div class="iname">Rose Petal Extract</div><p class="idesc">Hand-harvested Damascus roses, cold-pressed to preserve maximum potency. Deeply hydrating with anti-inflammatory properties that calm and restore natural balance.</p></div>
+      <div class="ibox ibox-ink reveal d3"><div class="isym">朱</div><div class="iname">Cinnabar Root</div><p class="idesc">The heart of our formula. Sourced from the Guizhou highlands, revered for centuries for its powerful skin-renewing and radiance-boosting properties.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="redefine">
+  <h2 class="redefine-h2 reveal">REDEFINING TEXTURE</h2>
+  <p class="redefine-body reveal d1">True texture transformation begins beneath the surface. Our advanced biotechnology works in harmony with your skin's natural processes, rebuilding the foundation of healthy, luminous skin. The result is not just softness — it is a complete reimagining of what your skin can be.</p>
+</div>
+
+<div class="stats">
+  <div class="sbox reveal"><div class="sn" data-to="97">0</div><div class="sl">% Satisfaction Rate</div></div>
+  <div class="sbox reveal d1"><div class="sn" data-to="3000">0</div><div class="sl">Years of Wisdom</div></div>
+  <div class="sbox reveal d2"><div class="sn" data-to="48">0</div><div class="sl">Pure Ingredients</div></div>
+  <div class="sbox reveal d3"><div class="sn" data-to="120">0</div><div class="sl">Countries Worldwide</div></div>
+</div>
+
+<section class="mobile-sec">
+  <div class="slabel reveal" style="justify-content:center">Digital Experience</div>
+  <h2 class="mobile-h2 reveal d1">MOBILE RESPONSIVE</h2>
+  <div class="phones reveal d2">
+    <div class="pmock"><div class="pmock-bar"></div><div class="psc"><div class="ps-red"><span>CINNABAR</span></div><div class="ps-line"></div><div class="ps-line ps-line-s"></div><div class="ps-row"><div class="ps-block ps-block-r"></div><div class="ps-block"></div></div><div class="ps-line"></div></div></div>
+    <div class="center-circle"><span>朱</span></div>
+    <div class="pmock"><div class="pmock-bar"></div><div class="psc"><div class="ps-red"><span>SHOP</span></div><div class="ps-row"><div class="ps-block"></div><div class="ps-block ps-block-r"></div></div><div class="ps-line"></div><div class="ps-line ps-line-s"></div></div></div>
+  </div>
+</section>
+
+<section class="ritual" id="ritual">
+  <div class="ritual-inner"><div class="slabel reveal" style="color:rgba(192,57,43,.7)">The Process</div><h2 class="ritual-h2 reveal d1">THE SACRED RITUAL</h2></div>
+  <div class="ritual-grid">
+    <div class="rstep reveal"><div class="rnum">01</div><div class="rtitle">CLEANSE</div><p class="rbody">Begin with pure intention. Remove the day with our gentle bamboo foam cleanser, awakening the skin's natural radiance.</p></div>
+    <div class="rstep reveal d1"><div class="rnum">02</div><div class="rtitle">RESTORE</div><p class="rbody">Layer the Cinnabar Elixir in slow, upward motions. Feel ancient wisdom absorb into every pore, repairing from within.</p></div>
+    <div class="rstep reveal d2"><div class="rnum">03</div><div class="rtitle">NOURISH</div><p class="rbody">Seal the ritual with Red Jade Cream. A luxurious barrier that locks in moisture and protects against the elements.</p></div>
+    <div class="rstep reveal d3"><div class="rnum">04</div><div class="rtitle">ILLUMINATE</div><p class="rbody">Wake to luminous skin. A transformation that unfolds over weeks — visible, lasting, and deeply personal.</p></div>
+  </div>
+</section>
+
+<section class="testi">
+  <div class="slabel reveal" style="justify-content:center">What They Say</div>
+  <p class="tq reveal d1" id="tq">"My skin has never felt so alive. CINNABAR doesn't just treat the surface — it transforms from within. This is not skincare. This is a ritual."</p>
+  <div class="ta reveal d2" id="ta">— Mei Lin, Shanghai</div>
+  <div class="tdots"><div class="tdot on" data-i="0"></div><div class="tdot" data-i="1"></div><div class="tdot" data-i="2"></div></div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="cl">
+    <div class="slabel reveal" style="color:rgba(192,57,43,.6)">Connect With Us</div>
+    <h2 class="ch2 reveal d1">BEGIN YOUR <em>JOURNEY.</em></h2>
+    <p class="cbody reveal d2">Ready to experience the ancient art of radiance? Reach out to discover the CINNABAR ritual crafted for your unique skin.</p>
+    <div class="ci reveal d2"><div class="cidot"></div><div class="citext">hello@cinnabar.co</div></div>
+    <div class="ci reveal d3"><div class="cidot"></div><div class="citext">+86 10 8888 8888 · Beijing, China</div></div>
+    <div class="ci reveal d4"><div class="cidot"></div><div class="citext">Monday – Saturday · 9AM – 6PM CST</div></div>
+  </div>
+  <div class="cr reveal d2">
+    <div class="form">
+      <input type="text" placeholder="Your Name">
+      <input type="email" placeholder="Email Address">
+      <input type="text" placeholder="Subject">
+      <textarea placeholder="Your Message"></textarea>
+      <button class="fbtn">Send Message →</button>
+    </div>
+  </div>
+</section>
+
+<div class="thankyou">
+  <div class="reveal">
+    <div class="ty-kanji">钠康</div>
+    <div class="ty-small">承 · 人 · 群</div>
+    <div class="ty-text">THANK YOU<br>FOR WATCHING</div>
+    <span class="ty-icon">🫙</span>
+    <p style="font-size:11px;color:rgba(255,255,255,.35);margin-top:20px;letter-spacing:.08em">Designed with love — CINNABAR Skincare © 2026</p>
+  </div>
+  <div class="ty-right reveal d2">
+    <div class="ty-phones">
+      <div class="typh"><div class="typh-bar"></div><div class="typh-screen"><div class="ty-sred"><span>CINNABAR</span></div><div class="ty-sline"></div><div class="ty-sline" style="width:65%"></div><div style="height:28px;background:rgba(192,57,43,.15);margin-bottom:4px"></div><div class="ty-sline"></div></div></div>
+      <div class="typh"><div class="typh-bar"></div><div class="typh-screen"><div class="ty-sred"><span>SHOP</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:4px"><div style="height:24px;background:#eee"></div><div style="height:24px;background:rgba(192,57,43,.2)"></div></div><div class="ty-sline"></div><div class="ty-sline" style="width:50%"></div></div></div>
+    </div>
+    <div class="ty-credit">Portfolio Project · UI/UX Design</div>
+  </div>
+</div>
+<div class="footer-bar">
+  <div class="fb-logo">CINNABAR</div>
+  <div class="fb-links"><a href="#">Instagram</a><a href="#">Weibo</a><a href="#">WeChat</a><a href="#">Privacy</a><a href="#">Terms</a></div>
+  <div class="fb-copy">© 2026 CINNABAR Skincare. All rights reserved.</div>
+</div>
+
+<script>
+window.addEventListener('load',()=>setTimeout(()=>document.getElementById('loader').classList.add('hide'),2000));
+const cur=document.getElementById('cursor'),ring=document.getElementById('ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function loop(){rx+=(mx-rx)*.13;ry+=(my-ry)*.13;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
+document.querySelectorAll('a,button,.cc,.rstep,.tdot').forEach(el=>{el.addEventListener('mouseenter',()=>{cur.classList.add('big');ring.classList.add('big');});el.addEventListener('mouseleave',()=>{cur.classList.remove('big');ring.classList.remove('big');});});
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('scrolled',scrollY>60));
+const hi=document.getElementById('hi');hi.onload=()=>hi.classList.add('loaded');if(hi.complete)hi.classList.add('loaded');
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on');}),{threshold:.1,rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+const cobs=new IntersectionObserver(es=>{es.forEach(e=>{if(!e.isIntersecting)return;const el=e.target,t=+el.dataset.to;let n=0;const s=t/70;const run=()=>{n=Math.min(n+s,t);el.textContent=Math.floor(n).toLocaleString()+(t>=100?'+':'');if(n<t)requestAnimationFrame(run);};run();cobs.unobserve(el);});},{threshold:.6});
+document.querySelectorAll('[data-to]').forEach(el=>cobs.observe(el));
+const ts=[{q:'"My skin has never felt so alive. CINNABAR doesn\'t just treat the surface — it transforms from within. This is not skincare. This is a ritual."',a:'— Mei Lin, Shanghai'},{q:'"Three weeks in and my colleagues keep asking what I\'ve changed. The Cinnabar Elixir feels like liquid silk and works like nothing I\'ve ever tried."',a:'— Sophia Chen, Hong Kong'},{q:'"I was skeptical at first. Ancient wisdom meeting modern science seemed like marketing. Then my skin started glowing. Now I\'m a believer."',a:'— Yuki Tanaka, Tokyo'}];
+let ti=0;
+document.querySelectorAll('.tdot').forEach(d=>{d.addEventListener('click',()=>{ti=+d.dataset.i;document.getElementById('tq').textContent=ts[ti].q;document.getElementById('ta').textContent=ts[ti].a;document.querySelectorAll('.tdot').forEach((x,i)=>x.classList.toggle('on',i===ti));});});
+setInterval(()=>{ti=(ti+1)%ts.length;document.getElementById('tq').textContent=ts[ti].q;document.getElementById('ta').textContent=ts[ti].a;document.querySelectorAll('.tdot').forEach((x,i)=>x.classList.toggle('on',i===ti));},5000);
+</script>
+</body>
+</html>
